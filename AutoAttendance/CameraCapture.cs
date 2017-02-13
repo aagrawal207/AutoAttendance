@@ -30,32 +30,26 @@ namespace AutoAttendance {
 
         }
 
-        private void btnStart_Click(object sender, EventArgs e)
-        {
+        private void btnStart_Click(object sender, EventArgs e) {
             #region if capture is not created, create it now
-            if (capture == null)
-            {
-                try
-                {
+            if (capture == null) {
+                try {
                     capture = new Capture();
                 }
-                catch (NullReferenceException excpt)
-                {
+                catch (NullReferenceException excpt) {
                     MessageBox.Show(excpt.Message);
                 }
             }
             #endregion
 
-            if (capture != null)
-            {
-                if (captureInProgress)
-                {  //if camera is getting frames then stop the capture and set button Text
+            if (capture != null) {
+                if (captureInProgress) {  
+                    //if camera is getting frames then stop the capture and set button Text
                     // "Start" for resuming capture
                     btnStart.Text = "Start!"; //
                     Application.Idle -= ProcessFrame;
                 }
-                else
-                {
+                else {
                     //if camera is NOT getting frames then start the capture and set button
                     // Text to "Stop" for pausing capture
                     btnStart.Text = "Stop";
