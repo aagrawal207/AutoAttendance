@@ -16,7 +16,7 @@ namespace AutoAttendance {
         //declaring global variables
         private Capture capture;        //takes images from camera as image frames
         private bool captureInProgress; // checks if capture is executing
-
+        private HaarCascade haar;
         private void ProcessFrame(object sender, EventArgs arg) {
             Image<Bgr, Byte> ImageFrame = capture.QueryFrame();  //line 1
             CamImageBox.Image = ImageFrame;        //line 2
@@ -27,7 +27,8 @@ namespace AutoAttendance {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
-
+            // adjust path to find your XML file 
+            haar = new HaarCascade("haarcascade_frontalface_alt_tree.xml");
         }
 
         private void btnStart_Click(object sender, EventArgs e) {
