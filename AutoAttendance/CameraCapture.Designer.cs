@@ -35,11 +35,11 @@
             this.btnBrowse = new System.Windows.Forms.Button();
             this.Total_faces = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.scaleSpeed = new System.Windows.Forms.ComboBox();
             this.minNeighbor = new System.Windows.Forms.ComboBox();
+            this.scaleSpeed = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.scaleSize = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.CamImageBox)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -68,11 +68,11 @@
             // btnBrowse
             // 
             this.btnBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnBrowse.Location = new System.Drawing.Point(415, 448);
+            this.btnBrowse.Location = new System.Drawing.Point(397, 448);
             this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(75, 23);
+            this.btnBrowse.Size = new System.Drawing.Size(93, 23);
             this.btnBrowse.TabIndex = 4;
-            this.btnBrowse.Text = "pic1.jpeg";
+            this.btnBrowse.Text = "Browse Image";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
@@ -102,36 +102,21 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "DetectHaarCascade Parameters";
             // 
-            // label1
+            // minNeighbor
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 27);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(110, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Scale Increase Rate :";
-            // 
-            // label2
-            // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 57);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(128, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Min. Neighbor Detection :";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
-            // 
-            // label3
-            // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 84);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(110, 26);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Min. detection Scale :\r\n(Window Size)";
+            this.minNeighbor.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.minNeighbor.FormattingEnabled = true;
+            this.minNeighbor.Items.AddRange(new object[] {
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"});
+            this.minNeighbor.Location = new System.Drawing.Point(141, 57);
+            this.minNeighbor.Name = "minNeighbor";
+            this.minNeighbor.Size = new System.Drawing.Size(53, 21);
+            this.minNeighbor.TabIndex = 4;
+            this.minNeighbor.Text = "3";
             // 
             // scaleSpeed
             // 
@@ -148,21 +133,36 @@
             this.scaleSpeed.TabIndex = 3;
             this.scaleSpeed.Text = "1.2";
             // 
-            // minNeighbor
+            // label3
             // 
-            this.minNeighbor.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.minNeighbor.FormattingEnabled = true;
-            this.minNeighbor.Items.AddRange(new object[] {
-            "0",
-            "1",
-            "2",
-            "3",
-            "4"});
-            this.minNeighbor.Location = new System.Drawing.Point(141, 57);
-            this.minNeighbor.Name = "minNeighbor";
-            this.minNeighbor.Size = new System.Drawing.Size(53, 21);
-            this.minNeighbor.TabIndex = 4;
-            this.minNeighbor.Text = "3";
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 84);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(110, 26);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Min. detection Scale :\r\n(Window Size)";
+            // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 57);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(128, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Min. Neighbor Detection :";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 27);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(110, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Scale Increase Rate :";
             // 
             // scaleSize
             // 

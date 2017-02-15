@@ -11,6 +11,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.Util;
 using Emgu.CV.CvEnum;
+using System.IO;
 
 namespace AutoAttendance {
     public partial class CameraCapture : Form {
@@ -55,7 +56,7 @@ namespace AutoAttendance {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
-            // adjust path to find your XML file 
+            // adjust path to find your XML file
             haar = new HaarCascade("haarcascade_frontalface_alt_tree.xml");
         }
 
@@ -87,15 +88,27 @@ namespace AutoAttendance {
                 captureInProgress = !captureInProgress;
             }
         }
-        private bool check_webcam = false;
         private void btnBrowse_Click(object sender, EventArgs e) {
-            if(check_webcam == false) {
-                if (capture != null)
-                    capture.Dispose();
-                check_webcam = true;
-                capture = new Capture();
+            int size = -1;
+            var browse = new System.Windows.Forms.OpenFileDialog();
+            DialogResult result = browse.ShowDialog(); // Show the dialog.
+            string file = "";
+            string text = "";
+            if (result == DialogResult.OK) {
+                file = browse.FileName;
+                try {
+                    text = File.ReadAllText(file);
+                    size = text.Length;
+                }
+                catch (IOException)
+                {
+                    file = ".\\..\\..\\..\\pic1.jpeg";
+                }
             }
-            Image InputImg = Image.FromFile(@".\..\..\..\pic1.jpeg");
+            // MessageBox.Show(file);
+            Console.WriteLine(size); // <-- Shows file size in debugging mode.
+            Console.WriteLine(result); // <-- For debugging use.
+            Image InputImg = Image.FromFile(@file);
             Image<Bgr, byte> ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
             if (ImageFrame != null) {
                 Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
@@ -131,6 +144,11 @@ namespace AutoAttendance {
         }
 
         private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void xmlFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
