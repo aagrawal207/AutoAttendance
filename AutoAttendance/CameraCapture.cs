@@ -57,7 +57,7 @@ namespace AutoAttendance {
                 if (captureInProgress) {  
                     //if camera is getting frames then stop the capture and set button Text
                     // "Start" for resuming capture
-                    btnStart.Text = "Start"; //
+                    btnStart.Text = "Resume"; //
                     Application.Idle -= ProcessFrame;
                 }
                 else {
@@ -69,27 +69,28 @@ namespace AutoAttendance {
                 captureInProgress = !captureInProgress;
             }
         }
+        private void btnBrowse_Click(object sender, EventArgs e) {
+            Image InputImg = Image.FromFile(@".\..\..\..\pic1.jpeg");
+            Image<Bgr, byte> ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
+            if (ImageFrame != null) {
+                Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
+                var faces = grayframe.DetectHaarCascade(haar, 1.2, 3, HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(24, 24))[0];
+                foreach (var face in faces) {
+                    ImageFrame.Draw(face.rect, new Bgr(Color.Green), 3);
+                }
+                int TotalFaces = faces.Length;
+                Total_faces.Text = "Total Face detected : " + TotalFaces;
+                CamImageBox.Image = ImageFrame;
+            }
+        }
         private void ReleaseData() {
             if (capture != null)
                 capture.Dispose();
         }
 
-        private void btnBrowse_Click(object sender, EventArgs e) {
-            Image InputImg = Image.FromFile(@"C:\Users\Abhishek Agrawal\Pictures\pic1.jpeg");
-            Image<Bgr, byte> ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
-            if (ImageFrame != null)
-            {
-                Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
-                var faces = grayframe.DetectHaarCascade(haar, 1.4, 4, HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(25, 25))[0];
-                foreach (var face in faces)
-                {
-                    ImageFrame.Draw(face.rect, new Bgr(Color.Green), 3);
-                }
-                CamImageBox.Image = ImageFrame;
-                int TotalFaces = faces.Length;   // you can use TotalFaces from  here on, i'll only display it:
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
 
-                MessageBox.Show("Total faces detected: " + TotalFaces.ToString());
-            }
         }
     }
 }
