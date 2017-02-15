@@ -24,6 +24,10 @@ namespace AutoAttendance {
         private float scale_speed = (float)1.2;
         private int min_neighbor = 3;
         private int scale_size = 24;
+        private int TotalFaces = 0;
+
+        Bitmap[] extracted_faces;
+        int face_num = 0;
 
         private void ProcessFrame(object sender, EventArgs arg) {
             Image<Bgr, Byte> ImageFrame = capture.QueryFrame();  //line 1
@@ -45,7 +49,7 @@ namespace AutoAttendance {
                 foreach (var face in faces) {
                     ImageFrame.Draw(face.rect, new Bgr(Color.Green), 3);
                 }
-                int TotalFaces = faces.Length;
+                TotalFaces = faces.Length;
                 Total_faces.Text = "Total Face detected : " + TotalFaces;
             }
             CamImageBox.Image = ImageFrame;        //line 2
@@ -100,15 +104,15 @@ namespace AutoAttendance {
                     text = File.ReadAllText(file);
                     size = text.Length;
                 }
-                catch (IOException)
-                {
+                catch (IOException){
+                    //MessageBox.Show("Hello");
                     file = ".\\..\\..\\..\\pic1.jpeg";
                 }
             }
-            // MessageBox.Show(file);
+            //MessageBox.Show(file);
             Console.WriteLine(size); // <-- Shows file size in debugging mode.
             Console.WriteLine(result); // <-- For debugging use.
-            Image InputImg = Image.FromFile(@file);
+            Image InputImg = Image.FromFile(file);
             Image<Bgr, byte> ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
             if (ImageFrame != null) {
                 Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
@@ -125,12 +129,31 @@ namespace AutoAttendance {
                                                         min_neighbor, 
                                                         HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, 
                                                         new Size(scale_size, scale_size))[0];
-                foreach (var face in faces) {
-                    ImageFrame.Draw(face.rect, new Bgr(Color.Green), 3);
-                }
-                int TotalFaces = faces.Length;
+                TotalFaces = faces.Length;
                 Total_faces.Text = "Total Face detected : " + TotalFaces;
-                CamImageBox.Image = ImageFrame;
+                extracted_faces = new Bitmap[TotalFaces];
+                face_num = 0;
+                if (TotalFaces > 0) {
+                    Bitmap bmp_input = grayframe.ToBitmap();
+                    Bitmap extracted_face;
+                    Graphics face_canvas;
+                    foreach (var face in faces) {
+                        ImageFrame.Draw(face.rect, new Bgr(Color.Green), 3);
+                        extracted_face = new Bitmap(face.rect.Width, face.rect.Height);
+                        face_canvas = Graphics.FromImage(extracted_face);
+                        face_canvas.DrawImage(bmp_input, 0, 0, face.rect, GraphicsUnit.Pixel);
+                        extracted_faces[face_num] = extracted_face;
+                        face_num++;
+                    }
+                    extractedFace.Image = extracted_faces[0];
+                    CamImageBox.Image = ImageFrame;
+                    btnNext.Enabled = true;
+                    btnPrev.Enabled = true;
+                }
+                else {
+                    MessageBox.Show("No face detected.");
+                    CamImageBox.Image = ImageFrame;
+                }
             }
         }
         private void ReleaseData() {
@@ -151,6 +174,31 @@ namespace AutoAttendance {
         private void xmlFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button2_Click(object sender, EventArgs e) {
+            face_num++;
+            if(face_num < TotalFaces)
+                extractedFace.Image = extracted_faces[face_num];
+            else {
+                face_num = 0;
+                extractedFace.Image = extracted_faces[face_num];
+            }
+        }
+
+        private void extractedFace_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnPrev_Click(object sender, EventArgs e) {
+            face_num--;
+            if(face_num >= 0)
+                extractedFace.Image = extracted_faces[face_num];
+            else {
+                face_num = TotalFaces - 1;
+                extractedFace.Image = extracted_faces[face_num];
+            }
         }
     }
 }
