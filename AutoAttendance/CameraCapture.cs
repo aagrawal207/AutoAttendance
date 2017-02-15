@@ -20,16 +20,34 @@ namespace AutoAttendance {
 
         private HaarCascade haar;
 
+        private float scale_speed = (float)1.2;
+        private int min_neighbor = 3;
+        private int scale_size = 24;
+
         private void ProcessFrame(object sender, EventArgs arg) {
             Image<Bgr, Byte> ImageFrame = capture.QueryFrame();  //line 1
             if (ImageFrame != null) {
                 Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
-                var faces = grayframe.DetectHaarCascade(haar, 1.4, 4, HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(25, 25))[0];
+                scale_speed = float.Parse(scaleSpeed.Text);
+                min_neighbor = int.Parse(minNeighbor.Text);
+                try {
+                    scale_size = int.Parse(scaleSize.Text);
+                }
+                catch (FormatException) {
+                    scale_size = 25;
+                }
+                var faces = grayframe.DetectHaarCascade(haar,
+                                                        scale_speed,
+                                                        min_neighbor,
+                                                        HAAR_DETECTION_TYPE.DO_CANNY_PRUNING,
+                                                        new Size(scale_size, scale_size))[0];
                 foreach (var face in faces) {
                     ImageFrame.Draw(face.rect, new Bgr(Color.Green), 3);
                 }
+                int TotalFaces = faces.Length;
+                Total_faces.Text = "Total Face detected : " + TotalFaces;
             }
-                CamImageBox.Image = ImageFrame;        //line 2
+            CamImageBox.Image = ImageFrame;        //line 2
         }
 
         public CameraCapture() {
@@ -69,12 +87,31 @@ namespace AutoAttendance {
                 captureInProgress = !captureInProgress;
             }
         }
+        private bool check_webcam = false;
         private void btnBrowse_Click(object sender, EventArgs e) {
+            if(check_webcam == false) {
+                if (capture != null)
+                    capture.Dispose();
+                check_webcam = true;
+                capture = new Capture();
+            }
             Image InputImg = Image.FromFile(@".\..\..\..\pic1.jpeg");
             Image<Bgr, byte> ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
             if (ImageFrame != null) {
                 Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
-                var faces = grayframe.DetectHaarCascade(haar, 1.2, 3, HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(24, 24))[0];
+                scale_speed = float.Parse(scaleSpeed.Text);
+                min_neighbor = int.Parse(minNeighbor.Text);
+                try {
+                    scale_size = int.Parse(scaleSize.Text);
+                }
+                catch (FormatException) {
+                    scale_size = 25;
+                }
+                var faces = grayframe.DetectHaarCascade(haar, 
+                                                        scale_speed, 
+                                                        min_neighbor, 
+                                                        HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, 
+                                                        new Size(scale_size, scale_size))[0];
                 foreach (var face in faces) {
                     ImageFrame.Draw(face.rect, new Bgr(Color.Green), 3);
                 }
@@ -89,6 +126,11 @@ namespace AutoAttendance {
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
         {
 
         }
