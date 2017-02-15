@@ -22,7 +22,14 @@ namespace AutoAttendance {
 
         private void ProcessFrame(object sender, EventArgs arg) {
             Image<Bgr, Byte> ImageFrame = capture.QueryFrame();  //line 1
-            CamImageBox.Image = ImageFrame;        //line 2
+            if (ImageFrame != null) {
+                Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
+                var faces = grayframe.DetectHaarCascade(haar, 1.4, 4, HAAR_DETECTION_TYPE.DO_CANNY_PRUNING, new Size(25, 25))[0];
+                foreach (var face in faces) {
+                    ImageFrame.Draw(face.rect, new Bgr(Color.Green), 3);
+                }
+            }
+                CamImageBox.Image = ImageFrame;        //line 2
         }
 
         public CameraCapture() {
@@ -50,13 +57,13 @@ namespace AutoAttendance {
                 if (captureInProgress) {  
                     //if camera is getting frames then stop the capture and set button Text
                     // "Start" for resuming capture
-                    btnStart.Text = "Start!"; //
+                    btnStart.Text = "Start"; //
                     Application.Idle -= ProcessFrame;
                 }
                 else {
                     //if camera is NOT getting frames then start the capture and set button
                     // Text to "Stop" for pausing capture
-                    btnStart.Text = "Stop";
+                    btnStart.Text = "Pause";
                     Application.Idle += ProcessFrame;
                 }
                 captureInProgress = !captureInProgress;
