@@ -190,7 +190,7 @@
             this.extractedFace.Size = new System.Drawing.Size(122, 140);
             this.extractedFace.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.extractedFace.TabIndex = 8;
-            this.extractedFace.TabStop = false;
+            this.extractedFace.TabStop = false;     
             // 
             // btnPrev
             // 

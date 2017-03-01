@@ -24,6 +24,7 @@ namespace AutoAttendance {
         private HaarCascade haar;
 
         private float scale_speed = (float)1.2;
+        private int no_times_executed = 0;
         private int min_neighbor = 3;
         private int scale_size = 24;
         private int TotalFaces = 0;
@@ -139,12 +140,22 @@ namespace AutoAttendance {
                     Bitmap bmp_input = grayframe.ToBitmap();
                     Bitmap extracted_face;
                     Graphics face_canvas;
+
+                    //creating folder for stroing images
+                    string folderString = createFolder.createfolder(no_times_executed++);
+
                     foreach (var face in faces) {
                         ImageFrame.Draw(face.rect, new Bgr(Color.Green), 3);
                         extracted_face = new Bitmap(face.rect.Width, face.rect.Height);
                         face_canvas = Graphics.FromImage(extracted_face);
                         face_canvas.DrawImage(bmp_input, 0, 0, face.rect, GraphicsUnit.Pixel);
                         extracted_faces[face_num] = extracted_face;
+                        
+
+                        //storing image
+                        string imagePath = System.IO.Path.Combine(folderString, face_num.ToString() + ".bmp");
+                        extracted_faces[face_num].Save(imagePath);
+
                         face_num++;
                     }
                     extractedFace.Image = extracted_faces[0];
@@ -202,7 +213,7 @@ namespace AutoAttendance {
 
     public class createFolder
     {
-        public static bool createfolder(int folderNum)
+        public static string createfolder(int folderNum)
         {
             //getting current execution directory
             string currentFolder = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -216,11 +227,11 @@ namespace AutoAttendance {
             System.IO.Directory.CreateDirectory(pathString);
             if (Directory.Exists(pathString))
             {
-                return true;
+                return pathString;
             }
             else
             {
-                return false;
+                return null;
             }
         }
     }
