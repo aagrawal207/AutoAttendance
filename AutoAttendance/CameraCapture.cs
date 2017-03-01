@@ -11,7 +11,9 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.Util;
 using Emgu.CV.CvEnum;
+using System.Reflection;
 using System.IO;
+using System.Diagnostics;
 
 namespace AutoAttendance {
     public partial class CameraCapture : Form {
@@ -186,11 +188,6 @@ namespace AutoAttendance {
             }
         }
 
-        private void extractedFace_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnPrev_Click(object sender, EventArgs e) {
             face_num--;
             if(face_num >= 0)
@@ -198,6 +195,32 @@ namespace AutoAttendance {
             else {
                 face_num = TotalFaces - 1;
                 extractedFace.Image = extracted_faces[face_num];
+            }
+        }
+    }
+
+
+    public class createFolder
+    {
+        public static bool createfolder(int folderNum)
+        {
+            //getting current execution directory
+            string currentFolder = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
+            //naming subfolder
+            string subFolder = "Folder" + folderNum.ToString();
+
+            //generating path for new folder
+            string pathString = System.IO.Path.Combine(currentFolder, subFolder);
+
+            System.IO.Directory.CreateDirectory(pathString);
+            if (Directory.Exists(pathString))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }
