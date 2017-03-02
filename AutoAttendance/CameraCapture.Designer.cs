@@ -93,7 +93,6 @@
             this.Total_faces.Size = new System.Drawing.Size(126, 20);
             this.Total_faces.TabIndex = 5;
             this.Total_faces.Text = "Total Face detected : 0";
-            this.Total_faces.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // groupBox1
             // 
@@ -160,7 +159,6 @@
             this.label2.Size = new System.Drawing.Size(128, 13);
             this.label2.TabIndex = 1;
             this.label2.Text = "Min. Neighbor Detection :";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label1
             // 

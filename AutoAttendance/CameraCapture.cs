@@ -1,41 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using Emgu.Util;
 using Emgu.CV.CvEnum;
 using System.Reflection;
 using System.IO;
-using System.Diagnostics;
 
-namespace AutoAttendance {
-    public partial class CameraCapture : Form {
+namespace AutoAttendance
+{
+    public partial class CameraCapture : Form
+    {
         //declaring global variables
-        private Capture capture;        //takes images from camera as image frames
+        private Capture capture;        // takes images from camera as image frames
         private bool captureInProgress; // checks if capture is executing
+        private HaarCascade haar;       // contains haar cascade file
+        private float scale_speed = (float)1.2; // default scale, getting through input
+        private int no_times_executed = 0; // used for folder name generation
+        private int min_neighbor = 3;   // default accuracy, getting through input   
+        private int scale_size = 24;    // default windw size, getting through input
+        private int TotalFaces = 0;     // counting number of faces
+        Bitmap[] extracted_faces;       // global array which holds extracted faces
+        private int face_num = 0;       // used for image name generation
 
-        private HaarCascade haar;
-
-        private float scale_speed = (float)1.2;
-        private int no_times_executed = 0;
-        private int min_neighbor = 3;
-        private int scale_size = 24;
-        private int TotalFaces = 0;
-
-        Bitmap[] extracted_faces;
-        int face_num = 0;
-
-        private void ProcessFrame(object sender, EventArgs arg) {
-            Image<Bgr, Byte> ImageFrame = capture.QueryFrame();  //line 1
-            if (ImageFrame != null) {
+        private void ProcessFrame(object sender, EventArgs arg)
+        {
+            //getting image from live feed
+            Image<Bgr, Byte> ImageFrame = capture.QueryFrame();
+            if (ImageFrame != null)
+            {
+                //converting to grayscale
                 Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
+
+                //getting input parameters
                 scale_speed = float.Parse(scaleSpeed.Text);
                 min_neighbor = int.Parse(minNeighbor.Text);
                 try {
@@ -44,18 +41,21 @@ namespace AutoAttendance {
                 catch (FormatException) {
                     scale_size = 25;
                 }
-                var faces = grayframe.DetectHaarCascade(haar,
-                                                        scale_speed,
-                                                        min_neighbor,
+
+                //running haar cascade detector
+                var faces = grayframe.DetectHaarCascade(haar, scale_speed, min_neighbor,
                                                         HAAR_DETECTION_TYPE.DO_CANNY_PRUNING,
                                                         new Size(scale_size, scale_size))[0];
-                foreach (var face in faces) {
+
+
+                foreach (var face in faces)
+                {
                     ImageFrame.Draw(face.rect, new Bgr(Color.Green), 3);
                 }
                 TotalFaces = faces.Length;
                 Total_faces.Text = "Total Face detected : " + TotalFaces;
             }
-            CamImageBox.Image = ImageFrame;        //line 2
+            CamImageBox.Image = ImageFrame;
         }
 
         public CameraCapture() {
@@ -63,7 +63,7 @@ namespace AutoAttendance {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
-            // adjust path to find your XML file
+            // loading xml files
             haar = new HaarCascade("haarcascade_frontalface_alt_tree.xml");
         }
 
@@ -172,21 +172,6 @@ namespace AutoAttendance {
         private void ReleaseData() {
             if (capture != null)
                 capture.Dispose();
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void xmlFiles_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void button2_Click(object sender, EventArgs e) {
