@@ -6,6 +6,7 @@ using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using System.Reflection;
 using System.IO;
+using System.Diagnostics;
 
 namespace AutoAttendance
 {
@@ -16,7 +17,6 @@ namespace AutoAttendance
         private bool captureInProgress; // checks if capture is executing
         private HaarCascade haar;       // contains haar cascade file
         private float scale_speed = (float)1.2; // default scale, getting through input
-        private int no_times_executed = 0; // used for folder name generation
         private int min_neighbor = 3;   // default accuracy, getting through input   
         private int scale_size = 24;    // default windw size, getting through input
         private int TotalFaces = 0;     // counting number of faces
@@ -60,6 +60,7 @@ namespace AutoAttendance
 
         public CameraCapture() {
             InitializeComponent();
+            Folder.CreateTopFolderDate();
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -136,13 +137,14 @@ namespace AutoAttendance
                 Total_faces.Text = "Total Face detected : " + TotalFaces;
                 extracted_faces = new Bitmap[TotalFaces];
                 face_num = 0;
-                if (TotalFaces > 0) {
+                if (TotalFaces > 0)
+                {
                     Bitmap bmp_input = grayframe.ToBitmap();
                     Bitmap extracted_face;
                     Graphics face_canvas;
 
-                    //creating folder for stroing images
-                    string folderString = createFolder.createfolder(no_times_executed++);
+                    //creating folder for storing images
+                    string folderString = Folder.CreateFolderForQuery();
 
                     foreach (var face in faces) {
                         ImageFrame.Draw(face.rect, new Bgr(Color.Green), 3);
@@ -169,6 +171,7 @@ namespace AutoAttendance
                 }
             }
         }
+
         private void ReleaseData() {
             if (capture != null)
                 capture.Dispose();
@@ -196,28 +199,31 @@ namespace AutoAttendance
     }
 
 
-    public class createFolder
+    public class Folder
     {
-        public static string createfolder(int folderNum)
+        private static string ExecutionFolder = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+        private static string TopFolderString;
+
+        //creates a folder with current date as name e.g. '02_03_2017'
+        public static void CreateTopFolderDate()
         {
-            //getting current execution directory
-            string currentFolder = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            string CurrentDate = DateTime.Now.ToString("dd_MM_yyyy");
+            TopFolderString = System.IO.Path.Combine(ExecutionFolder, CurrentDate);
 
-            //naming subfolder
-            string subFolder = "Folder" + folderNum.ToString();
+            if(!Directory.Exists(TopFolderString))
+            {
+                System.IO.Directory.CreateDirectory(TopFolderString);
+            }
+            return;
+        }
 
-            //generating path for new folder
-            string pathString = System.IO.Path.Combine(currentFolder, subFolder);
-
+        //creates folder with current time e.g. '03_26_26_PM'
+        public static string CreateFolderForQuery()
+        {
+            string CurrentTime = System.DateTime.Now.ToString("hh_mm_ss_tt");
+            string pathString = System.IO.Path.Combine(TopFolderString, CurrentTime);
             System.IO.Directory.CreateDirectory(pathString);
-            if (Directory.Exists(pathString))
-            {
-                return pathString;
-            }
-            else
-            {
-                return null;
-            }
+            return pathString;
         }
     }
 }
